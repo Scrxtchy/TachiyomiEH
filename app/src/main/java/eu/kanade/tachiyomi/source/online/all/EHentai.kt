@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.source.online.all
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.getOrDefault
@@ -61,24 +62,18 @@ class EHentai(override val id: Long,
     fun extendedGenericMangaParse(doc: Document)
             = with(doc) {
         //Parse mangas
-        val parsedMangas = select(".gtr0,.gtr1").map {
+        val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
-                    fav = parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")),
+                    fav = -1,//parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")), // TODO" fix
                     manga = Manga.create(id).apply {
                         //Get title
-                        it.select(".itd .it5 a").first()?.apply {
+                        it.select("a").first()?.apply {
                             title = text()
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.select(".itd .it2").first()?.apply {
-                            children().first()?.let {
-                                thumbnail_url = it.attr("src")
-                            } ?: let {
-                                text().split("~").apply {
-                                    thumbnail_url = "http://${this[1]}/${this[2]}"
-                                }
-                            }
+                        it.parent().select(".glthumb img").first()?.apply {
+                            thumbnail_url = it.attr("src")
                         }
                     })
         }
@@ -249,7 +244,7 @@ class EHentai(override val id: Long,
             thumbnailUrl = select("#gd1 div").attr("style").nullIfBlank()?.let {
                 it.substring(it.indexOf('(') + 1 until it.lastIndexOf(')'))
             }
-            genre = select(".ic").parents().attr("href").nullIfBlank()?.trim()?.substringAfterLast('/')
+            genre = select("#gdc div").text().nullIfBlank()?.trim()?.toLowerCase()
 
             uploader = select("#gdn").text().nullIfBlank()?.trim()
 
@@ -337,6 +332,8 @@ class EHentai(override val id: Long,
     }
 
     fun fetchFavorites(): Pair<List<ParsedManga>, List<String>> {
+        // TODO: fix
+        return Pair(emptyList(), emptyList());
         val favoriteUrl = "$baseUrl/favorites.php"
         val result = mutableListOf<ParsedManga>()
         var page = 1

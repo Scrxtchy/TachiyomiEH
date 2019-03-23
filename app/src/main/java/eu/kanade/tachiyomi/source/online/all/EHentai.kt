@@ -46,6 +46,8 @@ class EHentai(override val id: Long,
         else
             "e-hentai.org"
 
+    val favIndex: IntArray = intArrayOf(0,3840,4000,3536,128,2548,1215,15,1288,3726)
+
     override val baseUrl: String
         get() = "$schema://$domain"
 
@@ -94,14 +96,11 @@ class EHentai(override val id: Long,
     }
 
     fun parseFavoritesStyle(style: String?): Int {
-        val offset = style?.substringAfterLast("border-color:#")   //Unsure how this may intertwine with old code
-                ?.replaceAfter(";","")                  //As this just converts the border colour from
-                ?.dropLast(1)                                            //hexadecimal to an integer
-
-                                                                            //Need to turn this into a 0-10 integer
+        val border = style?.substringAfterLast("border-color:#")
+                ?.replaceAfter(";","")
+                ?.dropLast(1)
                 ?.toIntOrNull(radix = 16) ?: return -1
-        return (offset + 2)/-19 //TODO: How did this work earlier?
-        //return (style?.replace("[^?0-9]+", ""))!!.toInt()
+        return favIndex.indexOf(border)
     }
 
     /**

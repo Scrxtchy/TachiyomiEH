@@ -64,7 +64,8 @@ class EHentai(override val id: Long,
         //Parse mangas
         val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
-                    fav = -1,//parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")), // TODO" fix
+                    //fav = -1,//parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")), // TODO" fix
+                    fav = parseFavoritesStyle(it.parent().childNode(1).childNode(1).attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
                         it.select("a").first()?.apply {
@@ -93,11 +94,14 @@ class EHentai(override val id: Long,
     }
 
     fun parseFavoritesStyle(style: String?): Int {
-        val offset = style?.substringAfterLast("background-position:0px ")
-                ?.removeSuffix("px; cursor:pointer")
-                ?.toIntOrNull() ?: return -1
+        val offset = style?.substringAfterLast("border-color:#")   //Unsure how this may intertwine with old code
+                ?.replaceAfter(";","")                  //As this just converts the border colour from
+                ?.dropLast(1)                                            //hexadecimal to an integer
 
-        return (offset + 2)/-19
+                                                                            //Need to turn this into a 0-10 integer
+                ?.toIntOrNull(radix = 16) ?: return -1
+        return (offset + 2)/-19 //TODO: How did this work earlier?
+        //return (style?.replace("[^?0-9]+", ""))!!.toInt()
     }
 
     /**
@@ -333,7 +337,7 @@ class EHentai(override val id: Long,
 
     fun fetchFavorites(): Pair<List<ParsedManga>, List<String>> {
         // TODO: fix
-        return Pair(emptyList(), emptyList());
+        //return Pair(emptyList(), emptyList());
         val favoriteUrl = "$baseUrl/favorites.php"
         val result = mutableListOf<ParsedManga>()
         var page = 1

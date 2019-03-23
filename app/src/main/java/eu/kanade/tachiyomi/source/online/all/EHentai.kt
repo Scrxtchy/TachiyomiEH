@@ -66,8 +66,7 @@ class EHentai(override val id: Long,
         //Parse mangas
         val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
-                    //fav = -1,//parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")), // TODO" fix
-                    fav = parseFavoritesStyle(it.parent().childNode(1).childNode(1).attr("style")),
+                    fav = parseFavoritesStyle(it.parent().selectFirst(".gl2c").childNode(1).attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
                         it.select("a").first()?.apply {

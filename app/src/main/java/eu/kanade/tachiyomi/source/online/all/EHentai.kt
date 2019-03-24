@@ -47,13 +47,12 @@ class EHentai(override val id: Long,
             "e-hentai.org"
 
     val favIndex: IntArray = intArrayOf(0,3840,4000,3536,128,2548,1215,15,1288,3726)
+    val initMetaRegex = """inits?~(?:ul\.)?(.*?)~(.*?)~""".toRegex()
 
     override val baseUrl: String
         get() = "$schema://$domain"
-
     override val lang = "all"
     override val supportsLatest = true
-
     val prefs: PreferencesHelper by injectLazy()
 
     /**
@@ -69,13 +68,19 @@ class EHentai(override val id: Long,
                     fav = parseFavoritesStyle(it.parent().selectFirst(".gl2c").childNode(1).attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
-                        it.select("a").first()?.apply {
+                        it.selectFirst("a")?.apply {
                             title = text()
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().select(".glthumb img").first()?.apply {
-                            thumbnail_url = it.attr("src")
+                        it.parent().selectFirst(".glthumb")?.apply {
+                            thumbnail_url = this.selectFirst("img")
+                                    ?.attr("src")?.nullIfBlank()
+                                    ?: this.selectFirst("img")?.attr("src")
+                                            ?.nullIfBlank()
+                                            ?: parseInitsMeta(it.parent()
+                                                .selectFirst(".glthumb")
+                                                .childNode(0).toString())
                         }
                     })
         }
@@ -100,6 +105,11 @@ class EHentai(override val id: Long,
                 ?.dropLast(1)
                 ?.toIntOrNull(radix = 16) ?: return -1
         return favIndex.indexOf(border)
+    }
+
+    fun parseInitsMeta(meta: String): String{
+        val match = initMetaRegex.find(meta)
+        return "https://" + (if (!exh) "ul." else "") + match?.groupValues?.get(1) +"/"+ match?.groupValues?.get(2)
     }
 
     /**

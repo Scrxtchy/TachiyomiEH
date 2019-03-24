@@ -101,7 +101,7 @@ open class SourceManager(private val context: Context) {
         exSrcs += NHentai(context)
         exSrcs += HentaiCafe()
         exSrcs += Tsumino(context)
-        exSrcs += Hitomi(context)
+        //exSrcs += Hitomi(context)
         return exSrcs
     }
 

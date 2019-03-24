@@ -47,13 +47,12 @@ class EHentai(override val id: Long,
 
     val borderColorToFavIndex: IntArray = intArrayOf(
             0x000, 0xf00, 0xfa0, 0xdd0, 0x080, 0x9f4, 0x4bf, 0x00f, 0x508, 0xe8e)
+    val initMetaRegex = """inits?~(?:ul\.)?(.*?)~(.*?)~""".toRegex()
 
     override val baseUrl: String
         get() = "$schema://$domain"
-
     override val lang = "all"
     override val supportsLatest = true
-
     val prefs: PreferencesHelper by injectLazy()
 
     /**
@@ -67,17 +66,21 @@ class EHentai(override val id: Long,
         val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
                     fav = parseFavoritesStyle(it.parent()
-                            .childNode(1).childNode(1)
-                            .attr("style")),
+                        .selectFirst(".gl2c")
+                        .childNode(1).attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
-                        it.select("a").first()?.apply {
+                        it.selectFirst("a")?.apply {
                             title = text()
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().select(".glthumb img").first()?.apply {
-                            thumbnail_url = it.attr("src")
+                        it.parent().selectFirst("div[id^=posted_]")?.apply {
+                            thumbnail_url = this.selectFirst("img")
+                                    ?.attr("src")?.nullIfBlank()
+                                    ?: parseInitsMeta(it.parent()
+                                            .selectFirst(".glthumb")
+                                            .childNode(0).toString())
                         }
                     })
         }
@@ -101,6 +104,11 @@ class EHentai(override val id: Long,
                 ?.substringBefore(';')
                 ?.toIntOrNull(radix = 16) ?: return -1
         return borderColorToFavIndex.indexOf(borderColor)
+    }
+
+    fun parseInitsMeta(meta: String): String{
+        val match = initMetaRegex.find(meta)
+        return "https://" + (if (!exh) "ul." else "") + match?.groupValues?.get(1) +"/"+ match?.groupValues?.get(2)
     }
 
     /**

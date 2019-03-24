@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.source.online.all
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import eu.kanade.tachiyomi.data.database.models.Manga
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
 import eu.kanade.tachiyomi.data.preference.getOrDefault
@@ -46,7 +45,8 @@ class EHentai(override val id: Long,
         else
             "e-hentai.org"
 
-    val favIndex: IntArray = intArrayOf(0,3840,4000,3536,128,2548,1215,15,1288,3726)
+    val borderColorToFavIndex: IntArray = intArrayOf(
+            0x000, 0xf00, 0xfa0, 0xdd0, 0x080, 0x9f4, 0x4bf, 0x00f, 0x508, 0xe8e)
 
     override val baseUrl: String
         get() = "$schema://$domain"
@@ -66,8 +66,9 @@ class EHentai(override val id: Long,
         //Parse mangas
         val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
-                    //fav = -1,//parseFavoritesStyle(it.select(".itd .it3 > .i[id]").first()?.attr("style")), // TODO" fix
-                    fav = parseFavoritesStyle(it.parent().childNode(1).childNode(1).attr("style")),
+                    fav = parseFavoritesStyle(it.parent()
+                            .childNode(1).childNode(1)
+                            .attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
                         it.select("a").first()?.apply {
@@ -96,11 +97,10 @@ class EHentai(override val id: Long,
     }
 
     fun parseFavoritesStyle(style: String?): Int {
-        val border = style?.substringAfterLast("border-color:#")
-                ?.replaceAfter(";","")
-                ?.dropLast(1)
+        val borderColor = style?.substringAfterLast("border-color:#")
+                ?.substringBefore(';')
                 ?.toIntOrNull(radix = 16) ?: return -1
-        return favIndex.indexOf(border)
+        return borderColorToFavIndex.indexOf(borderColor)
     }
 
     /**
@@ -335,8 +335,6 @@ class EHentai(override val id: Long,
     }
 
     fun fetchFavorites(): Pair<List<ParsedManga>, List<String>> {
-        // TODO: fix
-        //return Pair(emptyList(), emptyList());
         val favoriteUrl = "$baseUrl/favorites.php"
         val result = mutableListOf<ParsedManga>()
         var page = 1

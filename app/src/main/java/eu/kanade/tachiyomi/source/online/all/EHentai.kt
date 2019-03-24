@@ -75,14 +75,12 @@ class EHentai(override val id: Long,
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().selectFirst(".glthumb")?.apply {
+                        it.parent().selectFirst("div[id^=posted_]")?.apply {
                             thumbnail_url = this.selectFirst("img")
                                     ?.attr("src")?.nullIfBlank()
-                                    ?: this.selectFirst("img")?.attr("src")
-                                            ?.nullIfBlank()
-                                            ?: parseInitsMeta(it.parent()
-                                                .selectFirst(".glthumb")
-                                                .childNode(0).toString())
+                                    ?: parseInitsMeta(it.parent()
+                                            .selectFirst(".glthumb")
+                                            .childNode(0).toString())
                         }
                     })
         }

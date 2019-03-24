@@ -67,7 +67,7 @@ class EHentai(override val id: Long,
             ParsedManga(
                     fav = parseFavoritesStyle(it.parent()
                         .selectFirst("div[id^=posted_]")
-                        .childNode(0).attr("style")),
+                        .attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
                         it.selectFirst("a")?.apply {

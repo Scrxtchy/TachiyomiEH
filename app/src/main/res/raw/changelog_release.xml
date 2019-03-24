@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
+    <changelogversion versionName="v7.4.7-EH" changeDate="">
+        <changelogtext>Fix for Ehentai thumbnails</changelogtext>
+        <changelogtext>Fix for Ehentai browse</changelogtext>
+        <changelogtext>Disabled Hitomi source</changelogtext>
+    </changelogversion>
     <changelogversion versionName="v7.4.6-EH" changeDate="">
         <changelogtext>Updated for new Ehentai website layout</changelogtext>
     </changelogversion>

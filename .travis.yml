@@ -10,9 +10,8 @@ android:
   licenses:
   - android-sdk-license-.+
 before_install:
-- yes | sdkmanager "platforms;android-27" # workaround for accepting the license
-- git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
-- export ANDROID_NDK_HOME=$HOME/android-ndk-root
+- echo y | sdkmanager "platforms;android-27" # workaround for accepting the license
+- echo y | sdkmanager "ndk-bundle"
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"

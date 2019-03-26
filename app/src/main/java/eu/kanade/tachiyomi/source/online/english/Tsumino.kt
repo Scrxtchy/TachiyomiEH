@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.source.online.english
 
 import android.content.Context
 import android.net.Uri
-import com.crashlytics.android.Crashlytics
 import com.github.salomonbrys.kotson.*
 import com.google.gson.JsonParser
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
@@ -332,7 +331,6 @@ class Tsumino(private val context: Context): ParsedHttpSource(), LewdSource<Tsum
                         CAPTCHA_SCRIPT,
                         "$BASE_URL/Read/Auth/$id")
             } catch(t: Throwable) {
-                Crashlytics.logException(t)
                 context.toast("Could not launch captcha-solving activity: ${t.message}")
             }
         }

@@ -66,8 +66,8 @@ class EHentai(override val id: Long,
         val parsedMangas = select("table.itg td.glname").map {
             ParsedManga(
                     fav = parseFavoritesStyle(it.parent()
-                        .selectFirst(".gl2c")
-                        .childNode(1).attr("style")),
+                        .selectFirst("div[id^=posted_]")
+                        .attr("style")),
                     manga = Manga.create(id).apply {
                         //Get title
                         it.selectFirst("a")?.apply {
@@ -75,7 +75,7 @@ class EHentai(override val id: Long,
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().selectFirst("div[id^=posted_]")?.apply {
+                        it.parent().selectFirst(".glthumb")?.apply {
                             thumbnail_url = this.selectFirst("img")
                                     ?.attr("src")?.nullIfBlank()
                                     ?: parseInitsMeta(it.parent()

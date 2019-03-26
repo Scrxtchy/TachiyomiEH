@@ -8,7 +8,7 @@ TachiyomiEH is a fork of the [original Tachiyomi app](https://github.com/inorich
 [https://forums.e-hentai.org/index.php?showtopic=185421](https://forums.e-hentai.org/index.php?showtopic=185421)
 
 # Download
-[![stable release](https://img.shields.io/github/release/NerdNumber9/TachiyomiEH.svg?maxAge=3600&label=stable)](https://github.com/NerdNumber9/TachiyomiEH/releases)
+[![stable release](https://img.shields.io/github/release/ilwaz/TachiyomiEH.svg?maxAge=3600&label=stable)](https://github.com/ilwaz/TachiyomiEH/releases)
 
 # Features
 

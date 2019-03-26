@@ -75,7 +75,7 @@ class EHentai(override val id: Long,
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().selectFirst(".glthumb img")?.apply {
+                        it.parent().selectFirst(".glthumb")?.apply {
                             thumbnail_url = this.selectFirst("img")
                                     ?.attr("src")?.nullIfBlank()
                                     ?: parseInitsMeta(it.parent()

@@ -1,4 +1,4 @@
-<div style="text-align:center"><img src ="https://raw.githubusercontent.com/NerdNumber9/TachiyomiEH/master/branding/teh-banner.png" /></div>
+<div style="text-align:center"><img src ="https://raw.githubusercontent.com/ilwaz/TachiyomiEH/master/branding/teh-banner.png" /></div>
 <br>
 
 TachiyomiEH is a free and open source E-Hentai, ExHentai and PervEden galleries reader for Android.

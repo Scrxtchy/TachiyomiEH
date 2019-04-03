@@ -12,6 +12,9 @@ android:
 before_install:
 - echo y | sdkmanager "platforms;android-27" # workaround for accepting the license
 - echo y | sdkmanager "ndk-bundle"
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+      openssl aes-256-cbc -K $encrypted_169fd5878c96_key -iv $encrypted_169fd5878c96_iv -in "$PWD/.travis/signing.jks.enc" -out $HOME/.android/signing.jks -d;
+  fi
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
@@ -24,3 +27,19 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+deploy:
+- provider: releases
+  api_key:
+    secure: P9lSn9XbKgWZd4BLq36UMbD4mxIWXfQG0QIJs3pVXdTYVtXSwPmFEiyfTDpWUPnffdozlUyScj4ciurnQJujH5Zf5J8FF2evaRxbFLyZEqZ+oBhBeonb+9hUOzGPTxkyey2W1EL6mMtkyYcfQGGex/4p8ZhOsaO4LOvMhmGfeWnS75f9XzY0eLMw7YVVtqLMdM45ItPG55mAcknsuX3yRZnKVthLkyjqxApZaXn0gEG+DEyydjRY72LnENFr+6bbUSQNZQjEXBPyR+fUZpBtkH8VspfOEe8fw1R9qv1dQTF5GsGOOSNganNzdGG3XKyVlTZ0Z34tnm6yvbO/WhfN2ZMNlnQgp1diMII5RGCihdYFe5cD291kYoKk2ZGk0FQrBBWhi7RyFXgcdpJNwifOXwtD1HbzFcVW/GTxeFyWh9lqsrKZCx31SyySRU+yAQU/z0Jkk/ZycPUJySmfCVDdK0sYQiam1y+zQ1YoFur0HqIyHmiL7FUJ2e6JpuNUBjAfW/galOl6TT9dTxB/IbsLGn5MqxiIP6bvLW4halUXl8Sd+ymgGquunLLY4h6lkhMeoj1+h5Xtj5kc63CFCfQTgFM+1TtJLCk1jDL4BLNh0JFy5U1EtNMpuILXEhbQdYShFEQKz+pALluKYrOPaACpnOPAH+yPUiPPyzkKuwy/jUo=
+  file: tachiyomi-v*.apk
+  file_glob: true
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: ilwaz/TachiyomiEH
+env:
+  global:
+  - secure: "bkE9LKXGpjDYuxn0HWrrZtA0dC54qgpP33842/8N7KSAR3DPZKyZYLd7aBLHXzRfCT6Wv7m0p0MFScXv8e/4BOINh7D1qwZVAsGLw4AkbGulwGbAQSzoDQ7l/GBT/Bb4X3TigpOf6wNJJRVG1bHOuUWRYu9HbURRqeSg1NgYPfn+st+24Sh9OhsfTyYHON7NGIQuLJBY21QbeQ4/58PfXxJi+NVseTjTrDNOsASeoVp0FHbl+QVAtbkhU1eoBdWKt6kdgWpVLokUjw27FEO1/dFOewDRGxHWXn07R7rhAY4sxc34n9fEi88sDWYOGwWwvC4J+QSVs9huk5cH4lSgdUL/QFqqfhur6XjpI4RxdUyE1LEyiPs3HI9uyVcozrot+Idj0S4/RVysID/ZIDd2gcwRdz4SFgBJif/wXCg9sKO4iZeAO5UXX85fDuK53VTQDNYJUgLTHznP/+aVylibwqpKVBEiTS+UIBgmn2rhQ0TbeWX5InOa+rwrb6R/KugVvbglZVOYcZjgsWel4bj/lTZenh9wIrMTmv/ciTQyiZaDkY7ODfurhLiA8NEzgUX3EdMpITNpWr1e2/WxD4OeNJN/mujzNCxH55KzDA2pSa2QlyeR9+dw5IXmTz6lt4b5PKFAfb4A/u+271uM/x8kTfX6AQCI6SHF5FA3sRlk55k=" # STORE_ALIAS
+  - secure: "QrzbTzWVQl/VurJLvMoXAW2C3DBQEYND/xPxFt08qaA7haWxrNxKZ5WI7T0ZbZYVyS3jRrUSg18macPnty06Yd59SbrxPTieHsV3r15BFgSsN+kiWY+mVlG/n52Yls31VohqDbqN6o/vqIvewku09NkGmH255ixiz+yFhaYQgkNUre+iFF7iAQS4ybQpHl2nm0bc10L9PIewd664z2PUt+pi2GRODzgRIxJLale3q0py603Ac0/gcBxo8PRJ3+BDLCaBPK/0blJvh0CdQCJTMj+ccamEEiSL3UxY3kMKw2TqMDMOMx+g9xtCOC4mkjn0tVxqihAB5m/WUMsrpE5yUzjkR5aqzEukqdDpjh3DCzaTyW0UA9vPU+mMKpFsAdISUnL/qz8YQLA2XChWiqeXryAlktP4U6TJm6e1YAwawO5acuLYFHHv0ZCps2zCeUF2pSBvPZKAEz6SsKgL5/nyw9wd8ur/hvR6AoqleZTD2XWQ3HisM/FUlcGkBJbyeg+GvVL03Wap5Hby775KSALV/ahZbIheRHvdiTaRuKkcQtRgEOWdJr+1aOrjV5UwDvVpCeawX3I5BwzhIMoH3YUnYAyg6hXNrzi9JdibmKPMVfDyw88He/nXqOQ5PTtRxSuBWOjZSgjGzN4adxsWlexts5y6zK0Jx9PFLX41pmqKfK0=" # STORE_PASS
+  - secure: "wO5d5QuCJKWJ3KvBdyTuCJIkN/Y5PTxr/pXSXuJ8OUjEkk6iizteRVQbRCMqRmlY9VLlWFkv3tExeV7hHBnvbeTsirH/vlN08EVqtG8yoRK/Fzl4F7ZRQD/WTxAnd1uTTVT2rWX24chfLCWAIdtbCPqfZjbbX3EM2OJYwA2rrTfkaUWxgZhfm6jV4UWBTC5ja7OluZpK2SwplTFCGF50po1TkFNrp1gLwO32+okehIsnbvXiIup9AkQwg5fs6Rno/aDO27aUPCNyYwCH3kxsL1BOBjMJpSuF8hkK4Al+CKjR1Mkd4mI8fAqv3laBX6mbzgGfxVmN/MfGXwBGXrNJtT1pw60gIgPFSrOEsSwH7jTjSZsMUfF+BYHQtQ21meNVHCHu8ZfTnkIKN8WdQC3Al0kQKQ+wFk59CFCb/A+K65hKsp6aO2e/wb3J0hKDZzVJb0NT5HLQZWriGNP+77Tor7nNDW9n2wZX22bScGawEQuao4DtZi4BR0qFlyimzNDCJDoP15XIxbjoXJNvsdjTML6aduEftrQBTZ4aRjVVZ1/HbVqgUjlUP9k34kC8CRd6IbTpgPUaArcUvrfMHfDYKdu2APAaC7FULZ1T6/acfM/W4wefRlbPk404I+Z1dQyIlP765lVbpQc644aXdfj/bfPgd/0f7TM7aJhH/QbmZXE=" # KEY_PASS
+  - STORE_PATH=$HOME/.android/signing.jks

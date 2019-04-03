@@ -47,7 +47,6 @@ class EHentai(override val id: Long,
 
     val borderColorToFavIndex: IntArray = intArrayOf(
             0x000, 0xf00, 0xfa0, 0xdd0, 0x080, 0x9f4, 0x4bf, 0x00f, 0x508, 0xe8e)
-    val initMetaRegex = """inits?~(?:ul\.)?(.*?)~(.*?)~""".toRegex()
 
     override val baseUrl: String
         get() = "$schema://$domain"
@@ -75,12 +74,9 @@ class EHentai(override val id: Long,
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
-                        it.parent().selectFirst(".glthumb")?.apply {
-                            thumbnail_url = this.selectFirst("img")
-                                    ?.attr("src")?.nullIfBlank()
-                                    ?: parseInitsMeta(it.parent()
-                                            .selectFirst(".glthumb")
-                                            .childNode(0).toString())
+                        it.parent().selectFirst(".glthumb").selectFirst("img")?.apply {
+                            thumbnail_url = this.attr("data-src")?.nullIfBlank()
+                                    ?: this.attr("src")
                         }
                     })
         }
@@ -104,11 +100,6 @@ class EHentai(override val id: Long,
                 ?.substringBefore(';')
                 ?.toIntOrNull(radix = 16) ?: return -1
         return borderColorToFavIndex.indexOf(borderColor)
-    }
-
-    fun parseInitsMeta(meta: String): String{
-        val match = initMetaRegex.find(meta)
-        return "https://" + (if (!exh) "ul." else "") + match?.groupValues?.get(1) +"/"+ match?.groupValues?.get(2)
     }
 
     /**

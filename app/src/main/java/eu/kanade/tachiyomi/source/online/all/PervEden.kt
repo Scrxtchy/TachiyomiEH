@@ -79,7 +79,7 @@ class PervEden(override val id: Long, val pvLang: PervEdenLang) : ParsedHttpSour
         val titleElement = header.child(0)
         manga.url = titleElement.attr("href")
         manga.title = titleElement.text().trim()
-        manga.thumbnail_url = "http:" + titleElement.getElementsByClass("mangaImage").first().attr("tmpsrc")
+        manga.thumbnail_url = "http:" + element.selectFirst(".mangaImage img").attr("tmpsrc")
         return manga
     }
 

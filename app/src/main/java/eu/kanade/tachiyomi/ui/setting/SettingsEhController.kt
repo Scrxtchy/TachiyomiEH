@@ -157,6 +157,27 @@ class SettingsEhController : SettingsController() {
             }
 
             preference {
+                title = "Resync Website Settings"
+                summary = "Resyncs the profile settings stored on site to the app defaults. You can still manage these on the website."
+
+                onClick {
+                    activity?.let {
+                        MaterialDialog.Builder(it)
+                                .title("Are you sure?")
+                                .content("This will take a moment to complete")
+                                .positiveText("Yes")
+                                .onPositive { _, _ ->
+                                    WarnConfigureDialogController.uploadSettings(router)
+                                }
+                                .negativeText("No")
+                                .cancelable(false)
+                                .show()
+                    }
+                }
+
+            }.dependency = PreferenceKeys.eh_enableExHentai
+
+            preference {
                 title = "Force sync state reset"
                 summary = "Performs a full resynchronization on the next sync. Removals will not be synced. All favorites in the app will be re-uploaded to ExHentai and all favorites on ExHentai will be re-downloaded into the app. Useful for repairing sync after sync has been interrupted."
 

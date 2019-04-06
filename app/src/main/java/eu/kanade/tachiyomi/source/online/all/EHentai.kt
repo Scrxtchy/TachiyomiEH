@@ -389,8 +389,8 @@ class EHentai(override val id: Long,
                 cookies["hath_perks"] = hathPerksCookie
         }
 
-        //Session-less list display mode (for users without ExHentai)
-        cookies["sl"] = "dm_0"
+        //Session-less "Minimal" display mode (for users without ExHentai)
+        cookies["sl"] = "dm_3"
 
         return cookies
     }

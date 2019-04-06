@@ -41,8 +41,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 7409
-        versionName "v7.4.9-EH"
+        versionCode 7500
+        versionName "v7.5.0-EH"
 
         buildConfigField "String", "COMMIT_COUNT", "\"${getCommitCount()}\""
         buildConfigField "String", "COMMIT_SHA", "\"${getGitSha()}\""

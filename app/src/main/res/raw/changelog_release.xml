@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
+    <changelogversion versionName="v7.5.0-EH" changeDate="">
+        <changelogtext>Update Ehentai profile sync (please click "Resync Website Settings" in the settings if you are logged in to Ehentai)</changelogtext>
+        <changelogtext>Fix PervEden error</changelogtext>
+        <changelogtext>Fix Cloudflare issues</changelogtext>
+        <changelogtext>Fix Ehentai thumbnails</changelogtext>
+    </changelogversion>
     <changelogversion versionName="v7.4.9-EH" changeDate="">
         <changelogtext>Fix github autoupdater</changelogtext>
     </changelogversion>

@@ -70,7 +70,7 @@ class EHentai(override val id: Long,
                     manga = Manga.create(id).apply {
                         //Get title
                         it.selectFirst("a")?.apply {
-                            title = text()
+                            title = this.selectFirst(".glink").text()
                             url = ExGalleryMetadata.normalizeUrl(attr("href"))
                         }
                         //Get image
